@@ -14,16 +14,19 @@ app = Flask(__name__)
 #     { 'title': '80\'s Music', 'description': 'Don\'t stop believing!' }
 # ]
 
+# index page
 @app.route('/')
 def playlists_index():
     """Show all playlists."""
     return render_template('playlists_index.html', playlists=playlists.find())
 
+# create a new playlist
 @app.route('/playlists/new', methods=['GET'])
 def playlists_new():
     """Create a new playlist."""
-    return render_template('playlists_new.html')
+    return render_template('playlists_new.html', playlist={}, title='New Playlist')
 
+# return to home page updated w/ new playlist
 @app.route('/playlists', methods=['POST'])
 def playlists_submit():
     """Submit a new playlist."""
@@ -35,15 +38,33 @@ def playlists_submit():
     playlist_id = playlists.insert_one(playlist).inserted_id
     return redirect(url_for('playlists_show', playlist_id=playlist_id))
 
+# show playlist and its videos
 @app.route('/playlists/<playlist_id>', methods=['GET'])
 def playlists_show(playlist_id):
     # return f'My ID is {playlist_id}'
     playlist = playlists.find_one({'_id': ObjectId(playlist_id)})
     return render_template('playlists_show.html', playlist=playlist)
 
+# edit playlist
+@app.route('/playlists/<playlist_id>/edit', methods=['GET'])
+def playlists_edit(playlist_id):
+    playlist = playlists.find_one({'_id': ObjectId(playlist_id)})
+    return render_template('playlists_edit.html', playlist=playlist, title='Edit Playlist')
 
-# @app.route('/playlists/:id/edit', methods=['GET'])
-# @app.route('/playlists/:id', methods=['PUT'])
+# return to playlist page w/ edited changes
+@app.route('/playlists/<playlist_id>', methods=['POST'])
+def playlists_update(playlist_id):
+    """Submit an edited playlist."""
+    updated_playlist = {
+        'title': request.form.get('title'),
+        'description': request.form.get('description'),
+        'videos': request.form.get('videos').split()
+    }
+    playlists.update_one(
+        {'_id': ObjectId(playlist_id)},
+        {'$set': updated_playlist})
+    return redirect(url_for('playlists_show', playlist_id=playlist_id))
+
 # @app.route('/playlists/:id', methods=['DELETE'])
 
 
