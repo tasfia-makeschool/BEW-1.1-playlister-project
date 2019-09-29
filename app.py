@@ -8,11 +8,13 @@ import os
 # client = MongoClient(host=f'{host}?retryWrites=false')
 # db = client.get_default_database()
 # playlists = db.playlists
+# comments = db.comments
 
 # local deployment
 client = MongoClient()
 db = client.Playlister
 playlists = db.playlists
+comments = db.comments
 
 app = Flask(__name__)
 
@@ -45,7 +47,8 @@ def playlists_submit():
 def playlists_show(playlist_id):
     # return f'My ID is {playlist_id}'
     playlist = playlists.find_one({'_id': ObjectId(playlist_id)})
-    return render_template('playlists_show.html', playlist=playlist)
+    playlist_comments = comments.find({'playlist_id': ObjectId(playlist_id)})
+    return render_template('playlists_show.html', playlist=playlist, comments=playlist_comments)
 
 # edit playlist
 @app.route('/playlists/<playlist_id>/edit', methods=['GET'])
@@ -67,11 +70,25 @@ def playlists_update(playlist_id):
         {'$set': updated_playlist})
     return redirect(url_for('playlists_show', playlist_id=playlist_id))
 
+# delete playlist and return to home page
 @app.route('/playlists/<playlist_id>/delete', methods=['POST'])
 def playlists_delete(playlist_id):
     """Delete one playlist."""
     playlists.delete_one({'_id': ObjectId(playlist_id)})
     return redirect(url_for('playlists_index'))
+
+# add comment
+@app.route('/playlists/comments', methods=['POST'])
+def comments_new():
+    """Submit a new comment."""
+    comment = {
+        'title': request.form.get('title'),
+        'content': request.form.get('content'),
+        'playlist_id': ObjectId(request.form.get('playlist_id'))
+    }
+    print(comment)
+    comment_id = comments.insert_one(comment).inserted_id
+    return redirect(url_for('playlists_show', playlist_id=request.form.get('playlist_id')))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))
