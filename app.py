@@ -3,18 +3,18 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
 
-host = os.environ.get('MONGODB_URI', 'mongodb://<tanner>:<makeschool2021>@ds157223.mlab.com:57223/heroku_56km70rf')
-client = MongoClient(host=f'{host}?retryWrites=false')
-db = client.get_default_database()
+# heroku deployment
+# host = os.environ.get('MONGODB_URI', 'mongodb://<tanner>:<makeschool2021>@ds157223.mlab.com:57223/heroku_56km70rf')
+# client = MongoClient(host=f'{host}?retryWrites=false')
+# db = client.get_default_database()
+# playlists = db.playlists
+
+# local deployment
+client = MongoClient()
+db = client.Playlister
 playlists = db.playlists
 
 app = Flask(__name__)
-
-# OUR MOCK ARRAY OF PROJECTS
-# playlists = [
-#     { 'title': 'Cat Videos', 'description': 'Cats acting weird' },
-#     { 'title': '80\'s Music', 'description': 'Don\'t stop believing!' }
-# ]
 
 # index page
 @app.route('/')
