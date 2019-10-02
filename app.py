@@ -72,10 +72,19 @@ def playlists_edit(playlist_id):
 @app.route('/playlists/<playlist_id>', methods=['POST'])
 def playlists_update(playlist_id):
     """Submit an edited playlist."""
+    videos = request.form.get('videos').split()
+    videos_embed = []
+    for video in videos: 
+        youtube = 'https://www.youtube.com/embed/'
+        if '=' in video:
+            videos_embed.append(youtube + video.split("=")[1])
+        else:
+            videos_embed.append(video)
+
     updated_playlist = {
         'title': request.form.get('title'),
         'description': request.form.get('description'),
-        'videos': request.form.get('videos').split()
+        'videos': videos_embed
     }
     playlists.update_one(
         {'_id': ObjectId(playlist_id)},
