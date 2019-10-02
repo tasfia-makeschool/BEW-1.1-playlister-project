@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
+from datetime import datetime
 
 # heroku deployment
 host = os.environ.get('MONGODB_URI', 'mongodb://<tanner>:<makeschool2021>@ds157223.mlab.com:57223/heroku_56km70rf')
@@ -38,12 +39,18 @@ def playlists_submit():
     videos_embed = []
     for video in videos: 
         youtube = 'https://www.youtube.com/embed/'
-        videos_embed.append(youtube + video.split("=")[1])
+        if '=' in video:
+            videos_embed.append(youtube + video.split("=")[1])
+        else:
+            videos_embed.append(video)
+
     playlist = {
         'title': request.form.get('title'),
         'description': request.form.get('description'),
-        'videos': videos_embed
+        'videos': videos_embed,
+        'created_at': datetime.now()
     }
+
     playlist_id = playlists.insert_one(playlist).inserted_id
     return redirect(url_for('playlists_show', playlist_id=playlist_id))
 

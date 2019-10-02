@@ -3,19 +3,32 @@
 
 {% block content %}
 
-<!-- <a href='/'>Back to Home</a> -->
 <p><button class='btn btn-secondary'><a class="text-white" href='/'>Back to Home</a></button></p>
 <div class='row'>
     <div class='col-sm-6 col-sm-offset-3'>
+        
+        <!-- title -->
         <h1>{{ playlist.title }}</h1>
-        <h4>{{ playlist.description }}</h4>
+
+        <!-- description -->
+        <h5>{{ playlist.description }}</h5>
+
+        <!-- created at -->
+        {% if playlist.created_at %}
+            <p class='text-muted'>Created on {{ playlist.created_at.strftime('%A, %d %B, %Y') }}
+                at {{ playlist.created_at.strftime('%I:%M %p') }}</p>
+        {% endif %}
+
+        <!-- edit and delete buttons -->
         <div class='btn-group btn-group-sm'>
-                <p><button class='btn btn-secondary'><a class="text-white" href='/playlists/{{ playlist._id }}/edit'>Edit</a></button></p>
-                <p><form method='POST' action='/playlists/{{ playlist._id }}/delete'>
-                    <input type='hidden' name='_method' value='DELETE'>
-                    <button class='btn btn-secondary' type='submit'>Delete</button>
-                </form></p>
-            </div>
+            <p><button class='btn btn-secondary'><a class="text-white" href='/playlists/{{ playlist._id }}/edit'>Edit</a></button></p>
+            <p><form method='POST' action='/playlists/{{ playlist._id }}/delete'>
+                <input type='hidden' name='_method' value='DELETE'>
+                <button class='btn btn-secondary' type='submit'>Delete</button>
+            </form></p>
+        </div>
+
+        <!-- list of videos -->
         {% for video in playlist.videos %}
                 <iframe width="420" height="236" src="{{ video }}"></iframe>
         {% endfor %}
