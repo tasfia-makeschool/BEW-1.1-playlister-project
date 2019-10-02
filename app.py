@@ -34,10 +34,15 @@ def playlists_new():
 @app.route('/playlists', methods=['POST'])
 def playlists_submit():
     """Submit a new playlist."""
+    videos = request.form.get('videos').split()
+    videos_embed = []
+    for video in videos: 
+        youtube = 'https://www.youtube.com/embed/'
+        videos_embed.append(youtube + video.split("=")[1])
     playlist = {
         'title': request.form.get('title'),
         'description': request.form.get('description'),
-        'videos': request.form.get('videos').split()
+        'videos': videos_embed
     }
     playlist_id = playlists.insert_one(playlist).inserted_id
     return redirect(url_for('playlists_show', playlist_id=playlist_id))
