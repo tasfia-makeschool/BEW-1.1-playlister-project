@@ -4,21 +4,21 @@
 {% block content %}
 
 <!-- <a href='/'>Back to Home</a> -->
-<p><button class='btn btn-primary'><a class="text-white" href='/'>Back to Home</a></button></p>
+<p><button class='btn btn-secondary'><a class="text-white" href='/'>Back to Home</a></button></p>
 <div class='row'>
     <div class='col-sm-6 col-sm-offset-3'>
         <h1>{{ playlist.title }}</h1>
         <h4>{{ playlist.description }}</h4>
+        <div class='btn-group btn-group-sm'>
+                <p><button class='btn btn-secondary'><a class="text-white" href='/playlists/{{ playlist._id }}/edit'>Edit</a></button></p>
+                <p><form method='POST' action='/playlists/{{ playlist._id }}/delete'>
+                    <input type='hidden' name='_method' value='DELETE'>
+                    <button class='btn btn-secondary' type='submit'>Delete</button>
+                </form></p>
+            </div>
         {% for video in playlist.videos %}
-            <!-- <div class="card"><div class="card-body"> -->
                 <iframe width="420" height="236" src="{{ video }}"></iframe>
-            <!-- </div></div> -->
         {% endfor %}
-        <p><button class='btn btn-primary'><a class="text-white" href='/playlists/{{ playlist._id }}/edit'>Edit</a></button></p>
-        <p><form method='POST' action='/playlists/{{ playlist._id }}/delete'>
-            <input type='hidden' name='_method' value='DELETE'>
-            <button class='btn btn-primary' type='submit'>Delete</button>
-        </form></p>
 
         <!-- Comment form -->
         {% include 'partials/comment_form.html' %}

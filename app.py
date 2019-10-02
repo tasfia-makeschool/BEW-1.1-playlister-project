@@ -4,17 +4,17 @@ from bson.objectid import ObjectId
 import os
 
 # heroku deployment
-host = os.environ.get('MONGODB_URI', 'mongodb://<tanner>:<makeschool2021>@ds157223.mlab.com:57223/heroku_56km70rf')
-client = MongoClient(host=f'{host}?retryWrites=false')
-db = client.get_default_database()
-playlists = db.playlists
-comments = db.comments
-
-# local deployment
-# client = MongoClient()
-# db = client.Playlister
+# host = os.environ.get('MONGODB_URI', 'mongodb://<tanner>:<makeschool2021>@ds157223.mlab.com:57223/heroku_56km70rf')
+# client = MongoClient(host=f'{host}?retryWrites=false')
+# db = client.get_default_database()
 # playlists = db.playlists
 # comments = db.comments
+
+# local deployment
+client = MongoClient()
+db = client.Playlister
+playlists = db.playlists
+comments = db.comments
 
 app = Flask(__name__)
 
